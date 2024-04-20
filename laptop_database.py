@@ -1,64 +1,57 @@
 import csv
 
-# Laptop Model
-model = []
+# Feature Gathering from CSV
+def get_features_from_csv(filename):
+    brand = []
+    processorBrand = []
+    processorTier = []
+    primaryStorageType = []
+    secondaryStorageType = []
+    gpuBrand = []
+    gpuType = []
+    isTouch = []
+    operatingSystem = []
+    model = []
+    priceUSD = []
+    rating = []
+    coreCount = []
+    threadCount = []
+    ramSize = []
+    primaryStorageSize = []
+    secondaryStorageSize = []
+    displaySize = []
+    resolutionWidth = []
+    resolutionHeight = []
+    warrentyPeriod = []
 
-# Non-Numerical Features
-brand = []
-processorBrand = []
-processorTier = []
-primarySortageType = []
-secondaryStorageType = []
-gpuBrand = []
-gpuType = []
-isTouch = []
-operatingSystem = []
-
-# Numerical Features
-priceUSD = []   # Note: Converted Price From Rupee
-rating = []
-coreCount = []
-threadCount = []
-ramSize = []
-primaryStorageSize = []
-secondaryStorageSize = []
-displaySize = []
-resolutionWidth = []
-resolutionHeight = []
-warrentyPeriod = []
-
-# Feature Gatering from CSV
-def __getFeaturesFromCSV():
-    with open('laptops.csv', mode ='r')as file:
+    with open(filename, mode='r') as file:
         csvFile = csv.DictReader(file)
-        for lines in csvFile:
-            # Non-Numerical
-            brand.append(lines['brand'])
-            model.append(lines['Model'])
-            processorBrand.append(lines['processor_brand'])
-            processorTier.append(lines['processor_tier'])
-            primarySortageType.append(lines['primary_storage_type'])
-            secondaryStorageType.append(lines['secondary_storage_type'])
-            gpuBrand.append(lines['gpu_brand'])
-            gpuType.append(lines['gpu_type'])
-            isTouch.append(lines['is_touch_screen'])
-            operatingSystem.append(lines['OS'])
-
-            # Neumerical
-            priceUSD.append(round((int(lines['Price'])/83.36)*100)/100)
-            rating.append(int(lines['Rating']))
-            coreCount.append(int(lines['num_cores']))
-            threadCount.append(int(lines['num_threads']))
-            ramSize.append(int(lines['ram_memory']))
-            primaryStorageSize.append(int(lines['primary_storage_capacity']))
-            secondaryStorageSize.append(int(lines['secondary_storage_capacity']))
-            displaySize.append(float(lines['display_size']))
-            resolutionWidth.append(int(lines['resolution_width']))
-            resolutionHeight.append(int(lines['resolution_height']))
-            if lines['year_of_warranty']=='No information':
+        for line in csvFile:
+            model.append(line['Model'])
+            brand.append(line['brand'])
+            processorBrand.append(line['processor_brand'])
+            processorTier.append(line['processor_tier'])
+            primaryStorageType.append(line['primary_storage_type'])
+            secondaryStorageType.append(line['secondary_storage_type'])
+            gpuBrand.append(line['gpu_brand'])
+            gpuType.append(line['gpu_type'])
+            isTouch.append(line['is_touch_screen'])
+            operatingSystem.append(line['OS'])
+            priceUSD.append(round((int(line['Price']) / 83.36) * 100) / 100) # Price Conversion from Rupee to USD
+            rating.append(int(line['Rating']))
+            coreCount.append(int(line['num_cores']))
+            threadCount.append(int(line['num_threads']))
+            ramSize.append(int(line['ram_memory']))
+            primaryStorageSize.append(int(line['primary_storage_capacity']))
+            secondaryStorageSize.append(int(line['secondary_storage_capacity']))
+            displaySize.append(float(line['display_size']))
+            resolutionWidth.append(int(line['resolution_width']))
+            resolutionHeight.append(int(line['resolution_height']))
+            if line['year_of_warranty'] == 'No information':
                 warrentyPeriod.append(0)
             else:
-                warrentyPeriod.append(int(lines['year_of_warranty']))
-    return
+                warrentyPeriod.append(int(line['year_of_warranty']))
 
-__getFeaturesFromCSV()
+    return model, brand, processorBrand, processorTier, primaryStorageType, secondaryStorageType, gpuBrand, gpuType, \
+           isTouch, operatingSystem, priceUSD, rating, coreCount, threadCount, ramSize, primaryStorageSize, \
+           secondaryStorageSize, displaySize, resolutionWidth, resolutionHeight, warrentyPeriod
