@@ -3,7 +3,6 @@ from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split as ttspl
 from sklearn.linear_model import LinearRegression as lreg
 from sklearn.metrics import mean_squared_error as mserr
-
 import numpy as np
 
 # Combine numerical features into a single array
