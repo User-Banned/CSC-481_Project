@@ -93,7 +93,27 @@ def recommend_laptops_with_model(max_price_limit, preferred_min_ram_size, prefer
     
     return top_laptops_within_limit
 
-# Ask for the price
+# Function to recommend multiple laptops from each cluster
+def recommend_laptops_from_clusters(max_price_limit, preferred_min_ram_size, preferred_min_storage_size, preferred_display_size, clusters, num_results_per_cluster=2):
+    recommended_laptops = []
+    
+    # Iterate over each cluster
+    for cluster_idx in range(clusters.n_clusters):
+        # Find laptops within the cluster
+        cluster_indices = np.where(clusters.labels_ == cluster_idx)[0]
+        
+        # Recommend laptops within the cluster
+        cluster_recommendations = recommend_laptops_with_model(max_price_limit, preferred_min_ram_size, preferred_min_storage_size, preferred_display_size, cluster_indices, num_results=num_results_per_cluster)
+        
+        # Append cluster recommendations to the overall recommended laptops list
+        recommended_laptops.extend(cluster_recommendations)
+    
+    # Sort recommended laptops based on AI rating (descending order)
+    recommended_laptops.sort(key=lambda x: x[1], reverse=True)
+    
+    return recommended_laptops[:num_results_per_cluster * clusters.n_clusters]
+
+# Function to ask the user for their price limit
 def prompt_price_limit():
     while True:
         try:
@@ -178,26 +198,6 @@ def prompt_preferred_display_size():
             return None
         else:
             print("Please enter 'yes' or 'no'.")
-
-# Function to recommend multiple laptops from each cluster
-def recommend_laptops_from_clusters(max_price_limit, preferred_min_ram_size, preferred_min_storage_size, preferred_display_size, clusters, num_results_per_cluster=2):
-    recommended_laptops = []
-    
-    # Iterate over each cluster
-    for cluster_idx in range(clusters.n_clusters):
-        # Find laptops within the cluster
-        cluster_indices = np.where(clusters.labels_ == cluster_idx)[0]
-        
-        # Recommend laptops within the cluster
-        cluster_recommendations = recommend_laptops_with_model(max_price_limit, preferred_min_ram_size, preferred_min_storage_size, preferred_display_size, cluster_indices, num_results=num_results_per_cluster)
-        
-        # Append cluster recommendations to the overall recommended laptops list
-        recommended_laptops.extend(cluster_recommendations)
-    
-    # Sort recommended laptops based on AI rating (descending order)
-    recommended_laptops.sort(key=lambda x: x[1], reverse=True)
-    
-    return recommended_laptops[:num_results_per_cluster * clusters.n_clusters]
 
 # Prompt the user for their price limit, preferred minimum rating, preferred RAM size, preferred primary storage size, and preferred display size
 max_price_limit = prompt_price_limit()
