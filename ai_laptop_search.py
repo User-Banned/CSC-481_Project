@@ -136,28 +136,28 @@ def recommend_laptops_from_clusters(max_price_limit, preferred_min_ram_size, pre
 def prompt_price_limit():
     while True:
         try:
-            price_limit = float(input("Enter your price limit: "))
+            price_limit = float(input("\nEnter your price limit: "))
             return price_limit
             break
         except ValueError:
-            print("Please enter a valid price.")
+            print("\nPlease enter a valid price.\n")
 
 # Function to prompt the user for their preferred RAM size
 def prompt_preferred_ram_size():
-    print("Do you have a preferred minimum size for RAM?")
+    print("\nDo you have a preferred minimum size for RAM?")
     while True:
-        response = input("Enter 'yes' or 'no': ").lower()
+        response = input("\nEnter 'yes' or 'no': ").lower()
         if response == 'yes':
             # Define the list of available RAM sizes
             available_ram_sizes = [4, 8, 16, 32, 64]  # You can modify this list as needed
             
             # Prompt the user to select their preferred RAM size from the available options
-            print("Available RAM sizes (in GB):", available_ram_sizes)
+            print("\nAvailable RAM sizes (in GB):", available_ram_sizes)
             while True:
                 try:
-                    preferred_ram_size = float(input("Enter your preferred minimum RAM size in GB from the list above: "))
+                    preferred_ram_size = float(input("\nEnter your preferred minimum RAM size in GB from the list above: "))
                     if preferred_ram_size not in available_ram_sizes:
-                        raise ValueError("Please enter a RAM size from the available options.")
+                        raise ValueError("\nPlease enter a RAM size from the available options.\n")
                     return preferred_ram_size
                 except ValueError as e:
                     print(e)
@@ -165,24 +165,24 @@ def prompt_preferred_ram_size():
         elif response == 'no':
             return None
         else:
-            print("Please enter 'yes' or 'no'.")
+            print("\nPlease enter 'yes' or 'no'.\n")
 
 # Function to prompt the user for their preferred primary storage size
 def prompt_preferred_storage_size():
-    print("Do you have a preferred minimum size for the primary storage?")
+    print("\nDo you have a preferred minimum size for the primary storage?")
     while True:
-        response = input("Enter 'yes' or 'no': ").lower()
+        response = input("\nEnter 'yes' or 'no': ").lower()
         if response == 'yes':
             # Define the list of available primary storage sizes
             available_storage_sizes = [128, 256, 512, 1024, 2048]
             
             # Prompt the user to select their preferred primary storage size from the available options
-            print("Available primary storage sizes (in GB):", available_storage_sizes)
+            print("\nAvailable primary storage sizes (in GB):", available_storage_sizes)
             while True:
                 try:
-                    preferred_storage_size = float(input("Enter your preferred minimum primary storage size in GB from the list above: "))
+                    preferred_storage_size = float(input("\nEnter your preferred minimum primary storage size in GB from the list above: "))
                     if preferred_storage_size not in available_storage_sizes:
-                        raise ValueError("Please enter a storage size from the available options.")
+                        raise ValueError("\nPlease enter a storage size from the available options.\n")
                     return preferred_storage_size
                 except ValueError as e:
                     print(e)
@@ -190,24 +190,24 @@ def prompt_preferred_storage_size():
         elif response == 'no':
             return None
         else:
-            print("Please enter 'yes' or 'no'.")
+            print("\nPlease enter 'yes' or 'no'.\n")
 
 # Function to prompt the user for their preferred display size
 def prompt_preferred_display_size():
-    print("Do you have a preferred display size?")
+    print("\nDo you have a preferred display size?")
     while True:
-        response = input("Enter 'yes' or 'no': ").lower()
+        response = input("\nEnter 'yes' or 'no': ").lower()
         if response == 'yes':
             # Define the list of available display sizes
-            available_display_sizes = [13.3, 14, 15.6, 17]  # You can modify this list as needed
+            available_display_sizes = [13.3, 14, 15.6, 16] 
             
             # Prompt the user to select their preferred display size from the available options
-            print("Available display sizes (in inches):", available_display_sizes)
+            print("\nAvailable display sizes (in inches):", available_display_sizes)
             while True:
                 try:
-                    preferred_display_size = float(input("Enter your preferred display size in inches from the list above: "))
+                    preferred_display_size = float(input("\nEnter your preferred display size in inches from the list above: "))
                     if preferred_display_size not in available_display_sizes:
-                        raise ValueError("Please enter a display size from the available options.")
+                        raise ValueError("\nPlease enter a display size from the available options.\n")
                     return preferred_display_size
                 except ValueError as e:
                     print(e)
@@ -215,7 +215,7 @@ def prompt_preferred_display_size():
         elif response == 'no':
             return None
         else:
-            print("Please enter 'yes' or 'no'.")
+            print("\nPlease enter 'yes' or 'no'.\n")
 
 # Prompt the user for their price limit, preferred RAM size, preferred primary storage size, and preferred display size
 max_price_limit = prompt_price_limit()
@@ -241,7 +241,7 @@ cluster_indices = np.where(kmeans.labels_ == users_cluster)[0]
 recommended_laptops = recommend_laptops_from_clusters(max_price_limit, preferred_ram_size, preferred_storage_size, preferred_display_size, kmeans, num_results_per_cluster=2)
 
 if recommended_laptops:
-    print("Recommended laptops within your price limit and other preferences")
+    print("\n\n\nRecommended laptops within your price limit and other preferences\n")
     for i, laptop in enumerate(recommended_laptops, 1):
         print(f"Laptop {i}:")
         print("Model:", laptop[0])
