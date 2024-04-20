@@ -42,49 +42,55 @@ encoded_categorical_features_dense = encoded_categorical_features.toarray()
 
 # Combine normalized numerical and encoded categorical features
 X = np.concatenate((numerical_features_normalized, encoded_categorical_features_dense), axis=1)
+
 # Target variable
-y = priceUSD = np.array(priceUSD)
+y = rating = np.array(rating)
 
 # Train the linear regression model
 regression_model = lreg()
 regression_model.fit(X, y)
 
-# Function to predict the price of a laptop based on the specified features
-def predict_laptop_price(features):
+# Function to predict the AI rating of a laptop based on the specified features
+def predict_laptop_rating(features):
     # Reshape the features array to match the input format of the model
     laptop_features = np.array(features).reshape(1, -1)
 
-    # Predict the price of the laptop
-    predicted_price = regression_model.predict(laptop_features)
+    # Predict the AI rating of the laptop
+    predicted_rating = regression_model.predict(laptop_features)
 
-    return predicted_price[0]
+    return predicted_rating[0]
 
 # Function to recommend multiple laptops within the specified price limit, with the minimum desired rating,
 # matching the preferred primary storage size, with the preferred RAM size, and with the preferred display size
-def recommend_laptops_with_model(max_price_limit, preferred_ram_size, preferred_storage_size, preferred_display_size, cluster_indices, num_results=5):
+def recommend_laptops_with_model(max_price_limit, preferred_min_ram_size, preferred_min_storage_size, preferred_display_size, cluster_indices, num_results=5):
     recommended_laptops = []
-    num_found = 0
     
     # Iterate over laptops in the cluster
     for idx in cluster_indices:
-        # Check if the rating meets the minimum requirement
-        if (preferred_storage_size is None or primaryStorageSize[idx] == preferred_storage_size) and \
-           (preferred_ram_size is None or ramSize[idx] == preferred_ram_size) and \
+        # Check if the price, storage size, RAM size, and display size meet the criteria
+        if (max_price_limit is None or priceUSD[idx] <= max_price_limit) and \
+           (preferred_storage_size is None or primaryStorageSize[idx] >= preferred_min_storage_size) and \
+           (preferred_ram_size is None or ramSize[idx] >= preferred_min_ram_size) and \
            (preferred_display_size is None or displaySize[idx] == preferred_display_size):
-            # Predict the price of the laptop based on the specified features
-            predicted_price = predict_laptop_price(X[idx])
+            # Get the AI rating of the laptop
+            ai_rating = predict_laptop_rating(X[idx])
 
-            # Check if the predicted price is within the limit
-            if predicted_price <= max_price_limit:
-                laptop_model = model[idx]  # Retrieve the model of the laptop
-                actual_price = priceUSD[idx]  # Retrieve the actual price of the laptop
-                recommended_laptops.append((laptop_model, predicted_price, actual_price))
-                num_found += 1
-                
-                if num_found == num_results:
-                    break
-
-    return recommended_laptops
+            laptop_model = model[idx]  # Retrieve the model of the laptop
+            actual_price = priceUSD[idx]  # Retrieve the actual price of the laptop
+            recommended_laptops.append((laptop_model, ai_rating, actual_price))
+    
+    # Sort recommended laptops based on AI rating (descending order)
+    recommended_laptops.sort(key=lambda x: x[1], reverse=True)
+    
+    # Filter the top num_results laptops within the price limit
+    top_laptops_within_limit = []
+    for laptop in recommended_laptops:
+        if laptop[2] <= max_price_limit:
+            top_laptops_within_limit.append(laptop)
+            if len(top_laptops_within_limit) == num_results:
+                break
+    
+    return top_laptops_within_limit
 
 # Ask for the price
 def prompt_price_limit():
@@ -173,13 +179,13 @@ def prompt_preferred_display_size():
             print("Please enter 'yes' or 'no'.")
 
 # Prompt the user for their price limit, preferred minimum rating, preferred RAM size, preferred primary storage size, and preferred display size
-price_limit = prompt_price_limit()
+max_price_limit = prompt_price_limit()
 preferred_ram_size = prompt_preferred_ram_size()
 preferred_storage_size = prompt_preferred_storage_size()
 preferred_display_size = prompt_preferred_display_size()
 
-# Use k-means to find the cluster for the given price, rating, preferred storage size, and display size
-user_features = [price_limit, 0, 0, 0, preferred_ram_size, preferred_storage_size, 0, preferred_display_size, 0, 0]  # Placeholder value for missing features
+# Use k-means to find the cluster for the given user features
+user_features = [max_price_limit, 0, 0, 0, preferred_ram_size, preferred_storage_size, 0, preferred_display_size, 0, 0]  # Placeholder value for missing features
 if preferred_ram_size is None:
     user_features[4] = 0  # Placeholder value for missing preferred RAM size
 if preferred_storage_size is None:
@@ -189,23 +195,19 @@ if preferred_display_size is None:
 
 users_cluster = kmeans.predict([user_features])[0]
 
-# Find laptops within the cluster with the closest price to the given limit
+# Find laptops within the cluster that match the user's preferences
 cluster_indices = np.where(clusters == users_cluster)[0]
 
-# Find the closest laptop within the cluster based on price
-closest_laptop_index = cluster_indices[np.argmin(np.abs(priceUSD[cluster_indices] - price_limit))]
-closest_laptop_features = X[closest_laptop_index]
-
 # Recommend multiple laptops meeting the criteria and retrieve their models and actual prices
-recommended_laptops = recommend_laptops_with_model(price_limit, preferred_ram_size, preferred_storage_size, preferred_display_size, cluster_indices, 5)
+recommended_laptops = recommend_laptops_with_model(max_price_limit, preferred_ram_size, preferred_storage_size, preferred_display_size, cluster_indices, 5)
 
 if recommended_laptops:
     print("Recommended laptops within your price limit and other preferences")
     for i, laptop in enumerate(recommended_laptops, 1):
         print(f"Laptop {i}:")
         print("Model:", laptop[0])
-        print("Predicted price:", laptop[1])
-        print("Actual price:", laptop[2])
+        print("AI Rating:", laptop[1])  # Assuming this is the rating predicted by the AI model
+        print("Price:", laptop[2])
         print()
 else:
     print("Sorry, there are no laptops within your specified criteria.")
