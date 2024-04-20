@@ -61,15 +61,14 @@ def predict_laptop_price(features):
 
 # Function to recommend multiple laptops within the specified price limit, with the minimum desired rating,
 # matching the preferred primary storage size, with the preferred RAM size, and with the preferred display size
-def recommend_laptops_with_model(max_price_limit, min_rating, preferred_ram_size, preferred_storage_size, preferred_display_size, cluster_indices, num_results=5):
+def recommend_laptops_with_model(max_price_limit, preferred_ram_size, preferred_storage_size, preferred_display_size, cluster_indices, num_results=5):
     recommended_laptops = []
     num_found = 0
     
     # Iterate over laptops in the cluster
     for idx in cluster_indices:
         # Check if the rating meets the minimum requirement
-        if (min_rating is None or rating[idx] >= min_rating) and \
-           (preferred_storage_size is None or primaryStorageSize[idx] == preferred_storage_size) and \
+        if (preferred_storage_size is None or primaryStorageSize[idx] == preferred_storage_size) and \
            (preferred_ram_size is None or ramSize[idx] == preferred_ram_size) and \
            (preferred_display_size is None or displaySize[idx] == preferred_display_size):
             # Predict the price of the laptop based on the specified features
@@ -97,22 +96,6 @@ def prompt_price_limit():
         except ValueError:
             print("Please enter a valid price.")
 
-# Function to prompt the user for their preferred minimum rating
-def prompt_min_rating():
-    print("Do you have a preferred minimum rating?")
-    while True:
-        response = input("Enter 'yes' or 'no': ").lower()
-        if response == 'yes':
-            while True:
-                try:
-                    min_rating = float(input("Enter your preferred minimum rating: "))
-                    return min_rating
-                except ValueError:
-                    print("Please enter a valid rating.")
-        elif response == 'no':
-            return None
-        else:
-            print("Please enter 'yes' or 'no'.")
 
 # Function to prompt the user for their preferred RAM size
 def prompt_preferred_ram_size():
@@ -191,15 +174,12 @@ def prompt_preferred_display_size():
 
 # Prompt the user for their price limit, preferred minimum rating, preferred RAM size, preferred primary storage size, and preferred display size
 price_limit = prompt_price_limit()
-min_rating = prompt_min_rating()
 preferred_ram_size = prompt_preferred_ram_size()
 preferred_storage_size = prompt_preferred_storage_size()
 preferred_display_size = prompt_preferred_display_size()
 
 # Use k-means to find the cluster for the given price, rating, preferred storage size, and display size
-user_features = [price_limit, min_rating, 0, 0, preferred_ram_size, preferred_storage_size, 0, preferred_display_size, 0, 0]  # Placeholder value for missing features
-if min_rating is None:
-    user_features[1] = 0  # Placeholder value for missing minimum rating
+user_features = [price_limit, 0, 0, 0, preferred_ram_size, preferred_storage_size, 0, preferred_display_size, 0, 0]  # Placeholder value for missing features
 if preferred_ram_size is None:
     user_features[4] = 0  # Placeholder value for missing preferred RAM size
 if preferred_storage_size is None:
@@ -217,7 +197,7 @@ closest_laptop_index = cluster_indices[np.argmin(np.abs(priceUSD[cluster_indices
 closest_laptop_features = X[closest_laptop_index]
 
 # Recommend multiple laptops meeting the criteria and retrieve their models and actual prices
-recommended_laptops = recommend_laptops_with_model(price_limit, min_rating, preferred_ram_size, preferred_storage_size, preferred_display_size, cluster_indices, 5)
+recommended_laptops = recommend_laptops_with_model(price_limit, preferred_ram_size, preferred_storage_size, preferred_display_size, cluster_indices, 5)
 
 if recommended_laptops:
     print("Recommended laptops within your price limit and other preferences")
