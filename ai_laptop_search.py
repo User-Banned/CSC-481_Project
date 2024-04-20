@@ -28,7 +28,7 @@ scaler = MinMaxScaler()
 numerical_features_normalized = scaler.fit_transform(numerical_features)
 
 # Perform k-means clustering
-kmeans = KMeans(n_clusters=3, random_state=42)
+kmeans = KMeans(n_clusters=3, random_state=2024)
 clusters = kmeans.fit_predict(numerical_features_normalized)
 
 # Encode categorical features
