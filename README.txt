@@ -9,7 +9,7 @@ Prerequisites:
 
 Installation:
     Clone the repository:
-        git clone https://github.com/your_username/laptop-recommendation-system.git
+        git clone https://github.com/User-Banned/CSC-481_Project
         cd laptop-recommendation-system
 
     Install the required libraries:
