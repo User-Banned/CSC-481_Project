@@ -75,7 +75,6 @@ def recommend_laptops_with_model(max_price_limit, preferred_min_ram_size, prefer
            (preferred_display_size is None or displaySize[idx] == preferred_display_size):
             # Get the AI rating of the laptop
             ai_rating = predict_laptop_rating(X[idx])
-
             laptop_model = model[idx]  # Retrieve the model of the laptop
             actual_price = priceUSD[idx]  # Retrieve the actual price of the laptop
             recommended_laptops.append((laptop_model, ai_rating, actual_price))
@@ -122,7 +121,6 @@ def prompt_price_limit():
             break
         except ValueError:
             print("Please enter a valid price.")
-
 
 # Function to prompt the user for their preferred RAM size
 def prompt_preferred_ram_size():
@@ -220,8 +218,7 @@ users_cluster = kmeans.predict([user_features])[0]
 users_cluster = kmeans.predict([user_features])[0]
 cluster_indices = np.where(kmeans.labels_ == users_cluster)[0]
 
-
-# Recommend multiple laptops from each cluster and retrieve their models and actual prices
+# Recommend multiple laptops from each cluster and retrieve their models, the ai rating, and the prices
 recommended_laptops = recommend_laptops_from_clusters(max_price_limit, preferred_ram_size, preferred_storage_size, preferred_display_size, kmeans, num_results_per_cluster=2)
 
 if recommended_laptops:
@@ -229,7 +226,7 @@ if recommended_laptops:
     for i, laptop in enumerate(recommended_laptops, 1):
         print(f"Laptop {i}:")
         print("Model:", laptop[0])
-        print("AI Rating:", laptop[1])  # Assuming this is the rating predicted by the AI model
+        print("AI Rating:", laptop[1])
         print("Price:", laptop[2])
         print()
 else:
