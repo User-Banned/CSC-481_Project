@@ -105,7 +105,7 @@ def prompt_price_limit():
 
 # Function to prompt the user for their preferred RAM size
 def prompt_preferred_ram_size():
-    print("Do you have a preferred RAM size?")
+    print("Do you have a preferred minimum size for RAM?")
     while True:
         response = input("Enter 'yes' or 'no': ").lower()
         if response == 'yes':
@@ -116,7 +116,7 @@ def prompt_preferred_ram_size():
             print("Available RAM sizes (in GB):", available_ram_sizes)
             while True:
                 try:
-                    preferred_ram_size = float(input("Enter your preferred RAM size in GB from the list above: "))
+                    preferred_ram_size = float(input("Enter your preferred minimum RAM size in GB from the list above: "))
                     if preferred_ram_size not in available_ram_sizes:
                         raise ValueError("Please enter a RAM size from the available options.")
                     return preferred_ram_size
@@ -130,7 +130,7 @@ def prompt_preferred_ram_size():
 
 # Function to prompt the user for their preferred primary storage size
 def prompt_preferred_storage_size():
-    print("Do you have a preferred primary storage size?")
+    print("Do you have a preferred minimum size for the primary storage?")
     while True:
         response = input("Enter 'yes' or 'no': ").lower()
         if response == 'yes':
@@ -141,7 +141,7 @@ def prompt_preferred_storage_size():
             print("Available primary storage sizes (in GB):", available_storage_sizes)
             while True:
                 try:
-                    preferred_storage_size = float(input("Enter your preferred primary storage size in GB from the list above: "))
+                    preferred_storage_size = float(input("Enter your preferred minimum primary storage size in GB from the list above: "))
                     if preferred_storage_size not in available_storage_sizes:
                         raise ValueError("Please enter a storage size from the available options.")
                     return preferred_storage_size
