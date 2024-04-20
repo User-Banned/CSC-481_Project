@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.linear_model import LinearRegression as lreg
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder,MinMaxScaler
 from laptop_database import get_features_from_csv
 
 # Combine numerical features into a single array
@@ -23,9 +23,13 @@ numerical_features = combine_numerical_features(priceUSD, rating, coreCount, thr
                                                 secondaryStorageSize, displaySize, resolutionWidth, resolutionHeight,
                                                 warrentyPeriod)
 
+# Normalize numerical features
+scaler = MinMaxScaler()
+numerical_features_normalized = scaler.fit_transform(numerical_features)
+
 # Perform k-means clustering
 kmeans = KMeans(n_clusters=3, random_state=42)
-clusters = kmeans.fit_predict(numerical_features)
+clusters = kmeans.fit_predict(numerical_features_normalized)
 
 # Encode categorical features
 encoder = OneHotEncoder(drop='first')
@@ -36,9 +40,8 @@ encoded_categorical_features = encoder.fit_transform(categorical_features)
 # Convert encoded categorical features to dense array
 encoded_categorical_features_dense = encoded_categorical_features.toarray()
 
-# Combine numerical and encoded categorical features
-X = np.concatenate((numerical_features, encoded_categorical_features_dense), axis=1)
-
+# Combine normalized numerical and encoded categorical features
+X = np.concatenate((numerical_features_normalized, encoded_categorical_features_dense), axis=1)
 # Target variable
 y = priceUSD = np.array(priceUSD)
 
