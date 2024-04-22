@@ -17,11 +17,8 @@ Installation:
 
 Usage:
     1. Modify the laptops.csv file to include your dataset of laptops. (optional)
-    2. Run the ai_laptop_search.py.py script to interactively recommend laptops based on user input.
-
-        python ai_laptop_search.py.py
-
-    3. Follow the prompt to specify a price limit.
+    2. Run the ai_laptop_search.py script to interactively recommend laptops based on user input.
+    3. Follow the prompt to specify a price limit and add optional preferrences
 
 Files:
     laptops.csv: Dataset containing laptop information.
