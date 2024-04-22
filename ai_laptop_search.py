@@ -28,7 +28,7 @@ scaler = MinMaxScaler()
 numerical_features_normalized = scaler.fit_transform(numerical_features)
 
 # Perform k-means clustering
-n_clusters=3
+n_clusters=6
 kmeans = KMeans(n_clusters, random_state=2024)
 clusters = kmeans.fit_predict(numerical_features_normalized)
 
@@ -72,14 +72,14 @@ def predict_laptop_rating(features, cluster_idx):
     # Reshape the features array to match the input format of the model
     laptop_features = np.array(features).reshape(1, -1)
 
-    # Predict the AI rating of the laptop using the cluster-specific model
+    # Predict the rating of the laptop using the cluster-specific model
     predicted_rating = cluster_model.predict(laptop_features)
 
     return predicted_rating[0]
 
 # Function to recommend multiple laptops within the specified price limit, with the minimum desired rating,
 # matching the preferred primary storage size, with the preferred RAM size, and with the preferred display size
-def recommend_laptops_with_model(max_price_limit, preferred_min_ram_size, preferred_min_storage_size, preferred_display_size, cluster_indices, num_results=n_clusters*2):
+def recommend_laptops_with_model(max_price_limit, preferred_min_ram_size, preferred_min_storage_size, preferred_display_size, cluster_indices, num_results=n_clusters):
     recommended_laptops = []
     
     # Iterate over laptops in the cluster
@@ -92,12 +92,12 @@ def recommend_laptops_with_model(max_price_limit, preferred_min_ram_size, prefer
             # Get the cluster index for the current laptop
             laptop_cluster_idx = kmeans.labels_[idx]
             
-            # Predict the AI rating of the laptop using the cluster-specific model
+            # Predict the rating of the laptop using the cluster-specific model
             ai_rating = predict_laptop_rating(X[idx], laptop_cluster_idx)
             
             laptop_model = model[idx]  # Retrieve the model of the laptop
-            actual_price = priceUSD[idx]  # Retrieve the actual price of the laptop
-            recommended_laptops.append((laptop_model, ai_rating, actual_price))
+            laptop_price = priceUSD[idx]  # Retrieve the price of the laptop
+            recommended_laptops.append((laptop_model, ai_rating, laptop_price))
     
     # Sort recommended laptops based on AI rating (descending order)
     recommended_laptops.sort(key=lambda x: x[1], reverse=True)
@@ -113,7 +113,7 @@ def recommend_laptops_with_model(max_price_limit, preferred_min_ram_size, prefer
     return top_laptops_within_limit
 
 # Function to recommend multiple laptops from each cluster
-def recommend_laptops_from_clusters(max_price_limit, preferred_min_ram_size, preferred_min_storage_size, preferred_display_size, clusters, num_results_per_cluster=2):
+def recommend_laptops_from_clusters(max_price_limit, preferred_min_ram_size, preferred_min_storage_size, preferred_display_size, clusters, num_results_per_cluster=1):
     recommended_laptops = []
     
     # Iterate over each cluster
@@ -149,7 +149,7 @@ def prompt_preferred_ram_size():
         response = input("\nEnter 'yes' or 'no': ").lower()
         if response == 'yes':
             # Define the list of available RAM sizes
-            available_ram_sizes = [4, 8, 16, 32, 64]  # You can modify this list as needed
+            available_ram_sizes = [4, 8, 16, 32, 64] # Modify for all sizes
             
             # Prompt the user to select their preferred RAM size from the available options
             print("\nAvailable RAM sizes (in GB):", available_ram_sizes)
@@ -174,7 +174,7 @@ def prompt_preferred_storage_size():
         response = input("\nEnter 'yes' or 'no': ").lower()
         if response == 'yes':
             # Define the list of available primary storage sizes
-            available_storage_sizes = [128, 256, 512, 1024, 2048]
+            available_storage_sizes = [128, 256, 512, 1024, 2048] # Modify for all sizes
             
             # Prompt the user to select their preferred primary storage size from the available options
             print("\nAvailable primary storage sizes (in GB):", available_storage_sizes)
@@ -238,7 +238,7 @@ users_cluster = kmeans.predict([user_features])[0]
 cluster_indices = np.where(kmeans.labels_ == users_cluster)[0]
 
 # Recommend multiple laptops from each cluster and retrieve their models, the AI rating, and the prices
-recommended_laptops = recommend_laptops_from_clusters(max_price_limit, preferred_ram_size, preferred_storage_size, preferred_display_size, kmeans, num_results_per_cluster=2)
+recommended_laptops = recommend_laptops_from_clusters(max_price_limit, preferred_ram_size, preferred_storage_size, preferred_display_size, kmeans, num_results_per_cluster=1)
 
 if recommended_laptops:
     print("\n\n\nRecommended laptops within your price limit and other preferences\n")
