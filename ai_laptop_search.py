@@ -7,7 +7,7 @@ from laptop_database import get_features_from_csv
 # Combine numerical features into a single array
 def combine_numerical_features(priceUSD, rating, coreCount, threadCount, ramSize, primaryStorageSize,
                                secondaryStorageSize, displaySize, resolutionWidth, resolutionHeight, warrentyPeriod):
-    numerical_features = np.array([rating, coreCount, threadCount, ramSize, primaryStorageSize,
+    numerical_features = np.array([priceUSD, coreCount, threadCount, ramSize, primaryStorageSize,
                                    secondaryStorageSize, displaySize, resolutionWidth, resolutionHeight,
                                    warrentyPeriod]).T
     return numerical_features
