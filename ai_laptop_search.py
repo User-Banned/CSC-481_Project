@@ -96,8 +96,9 @@ def recommend_laptops_with_model(max_price_limit, preferred_min_ram_size, prefer
             ai_rating = predict_laptop_rating(X[idx], laptop_cluster_idx)
             
             laptop_model = model[idx]  # Retrieve the model of the laptop
+            laptop_rating = rating[idx]  # Retrieve the rating of the laptop
             laptop_price = priceUSD[idx]  # Retrieve the price of the laptop
-            recommended_laptops.append((laptop_model, ai_rating, laptop_price))
+            recommended_laptops.append((laptop_model, ai_rating, laptop_rating, laptop_price))
     
     # Sort recommended laptops based on AI rating (descending order)
     recommended_laptops.sort(key=lambda x: x[1], reverse=True)
@@ -246,7 +247,8 @@ if recommended_laptops:
         print(f"Laptop {i}:")
         print("Model:", laptop[0])
         print("AI Rating:", laptop[1])
-        print("Price:", laptop[2])
+        print("Users' Rating:", laptop[2])
+        print("Price:", laptop[3])
         print()
 else:
     print("Sorry, there are no laptops within your specified criteria.")
