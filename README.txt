@@ -1,6 +1,6 @@
 Laptop Recommendation System
 
-This project implements a simple laptop recommendation system using k-means clustering and linear regression. It allows users to specify a price limit they desire in a laptop, and then recommends a laptop within the specified price range.
+This project implements a simple laptop recommendation system using k-means clustering and linear regression. It allows users to specify a price limit they desire in a laptop, asks if they want to specify some optinal features, and then recommends a laptop within the specified price range.
 
 Getting Started
 Prerequisites:
@@ -13,7 +13,8 @@ Installation:
         cd laptop-recommendation-system
 
     Install the required libraries:
-        pip install scikit-learn numpy
+        pip install scikit-learn
+        pip install numpy
 
 Usage:
     1. Modify the laptops.csv file to include your dataset of laptops. (optional)
